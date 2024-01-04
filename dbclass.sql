@@ -593,17 +593,6 @@ create table book(
     b_publisher varchar(20) not null,
     b_price int not null
 );
-select * from book;
-insert into book(b_bookname, b_publisher, b_price) values ('축구역사','좋은출판사', 7000);
-insert into book(b_bookname, b_publisher, b_price) values ('축구 리포트','나무출판사', 13000);
-insert into book(b_bookname, b_publisher, b_price) values ('축구를 알려줘마','대한출판사', 22000);
-insert into book(b_bookname, b_publisher, b_price) values ('배구의 바이블','대한출판사', 35000);
-insert into book(b_bookname, b_publisher, b_price) values ('피켜 교과서','좋은출판사', 8000);
-insert into book(b_bookname, b_publisher, b_price) values ('피칭의 단계별기술','좋은출판사', 6000);
-insert into book(b_bookname, b_publisher, b_price) values ('야구의 추억 이야기','나이스미디어', 20000);
-insert into book(b_bookname, b_publisher, b_price) values ('야구 읽어주는 남자','나이스미디어', 13000);
-insert into book(b_bookname, b_publisher, b_price) values ('올림픽 스토리','이야기당', 7500);
-insert into book(b_bookname, b_publisher, b_price) values ('olympic history','strawberry', 13000);
 
 -- custmoer table
 drop table if exists customer;
@@ -613,12 +602,6 @@ create table customer(
     c_address varchar(20) not null,
     c_phone varchar(13)
 );
-select * from customer;
-insert into customer(c_name, c_address, c_phone) values ('손흥민','영국 런던', '000-5000-0001');
-insert into customer(c_name, c_address, c_phone) values ('김연아','대한민국 서울', '000-6000-0001');
-insert into customer(c_name, c_address, c_phone) values ('김연경','대한민국 서울', '000-7000-0001');
-insert into customer(c_name, c_address, c_phone) values ('류현진','캐나다 토론토', '000-7000-0001');
-insert into customer(c_name, c_address, c_phone) values ('이강인','프랑스 파리', null);
 
 -- orders table
 drop table if exists orders;
@@ -631,6 +614,27 @@ create table orders(
     constraint fk_customer foreign key(customer_id) references customer(id) on delete set null,
     constraint fk_book foreign key(book_id) references book(id) on delete set null
 );
+
+
+select * from book;
+insert into book(b_bookname, b_publisher, b_price) values ('축구역사','좋은출판사', 7000);
+insert into book(b_bookname, b_publisher, b_price) values ('축구 리포트','나무출판사', 13000);
+insert into book(b_bookname, b_publisher, b_price) values ('축구를 알려줘마','대한출판사', 22000);
+insert into book(b_bookname, b_publisher, b_price) values ('배구의 바이블','대한출판사', 35000);
+insert into book(b_bookname, b_publisher, b_price) values ('피켜 교과서','좋은출판사', 8000);
+insert into book(b_bookname, b_publisher, b_price) values ('피칭의 단계별기술','좋은출판사', 6000);
+insert into book(b_bookname, b_publisher, b_price) values ('야구의 추억 이야기','나이스미디어', 20000);
+insert into book(b_bookname, b_publisher, b_price) values ('야구 읽어주는 남자','나이스미디어', 13000);
+insert into book(b_bookname, b_publisher, b_price) values ('올림픽 스토리','이야기당', 7500);
+insert into book(b_bookname, b_publisher, b_price) values ('olympic history','strawberry', 13000);
+
+select * from customer;
+insert into customer(c_name, c_address, c_phone) values ('손흥민','영국 런던', '000-5000-0001');
+insert into customer(c_name, c_address, c_phone) values ('김연아','대한민국 서울', '000-6000-0001');
+insert into customer(c_name, c_address, c_phone) values ('김연경','대한민국 서울', '000-7000-0001');
+insert into customer(c_name, c_address, c_phone) values ('류현진','캐나다 토론토', '000-7000-0001');
+insert into customer(c_name, c_address, c_phone) values ('이강인','프랑스 파리', null);
+
 select * from orders;
 insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (1, 1, 6000, str_do_date('2023-07-01', '%Y-%m-%d'));
 insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (1, 3, 21000, str_do_date('2023-07-03', '%Y-%m-%d'));
@@ -733,18 +737,18 @@ select * from orders where not (o_orderdate >= '2023-07-04' and o_orderdate <= '
 select * from orders where o_orderdate < str_to_date('2023-07-04', '%Y-%m-%d') or o_orderdate > str_to_date('2023-07-07', '%Y-%m-%d');
 select * from orders where o_orderdate not between str_to_date('2023-07-04', '%Y-%m-%d') and str_to_date('2023-07-07', '%Y-%m-%d');
 -- 23. 고객, 주문 테이블 조인하여 고객번호 순으로 정렬
-select 
+select * from customer c, orders o where c.id = o.customer_id order by o.customer_id asc;
 -- 24. 고객이름(CUSTOMER), 고객이 주문한 도서 가격(ORDERS) 조회 
-
+select c_name, o_saleprice from customer c, orders o where c.id = o.customer_id;
 -- 25. 고객별(GROUP)로 주문한 도서의 총 판매액(SUM)과 고객이름을 조회하고 조회 결과를 가나다 순으로 정렬 
-
+select sum(o_saleprice), c_name from customer c, orders o where c.id = o.customer_id group by c_name order by c_name asc;
 -- 26. 고객명과 고객이 주문한 도서명을 조회(3테이블 조인)
-
+select c_name, b_bookname from book b, customer c, orders o where c.id = o.customer_id and b.id = o.book_id;
 -- 27. 2만원(SALEPRICE) 이상 도서를 주문한 고객의 이름과 도서명을 조회 
-
+select c_name, b_bookname from book b, customer c, orders o where (c.id = o.customer_id and b.id = o.book_id) and o_saleprice >= 20000;
 -- 28. 손흥민 고객의 총 구매액과 고객명을 함께 조회
-
+select c_name, sum(o_saleprice) from book b, customer c, orders o where (c.id = o.customer_id and b.id = o.book_id) and c_name ='손흥민';
 -- 29. 손흥민 고객의 총 구매수량과 고객명을 함께 조회
-
+select c_name, count(*) from book b, customer c, orders o where (c.id = o.customer_id and b.id = o.book_id) and c_name ='손흥민';
 
 
