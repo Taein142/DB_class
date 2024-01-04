@@ -715,7 +715,7 @@ select avg(o_saleprice), max(o_saleprice), min(o_saleprice) from orders;
 -- 15. 고객별로 주문한 도서의 총 수량과 총 판매액 조회 (GROUP BY 활용)
 select customer_id, count(*), sum(o_saleprice) from orders group by customer_id;
 -- 16. 가격이 8,000원 이상인 도서를 구매한 고객에 대해 고객별 주문 도서의 총 수량 조회 (GROUP BY 활용)
-select customer_id, count(*), sum(o_saleprice) from orders where o_saleprice >= 8000 group by customer_id;
+select customer_id, count(*) from orders where o_saleprice >= 8000 group by customer_id;
 --    (단, 8,000원 이상 도서 두 권 이상 구매한 고객만) 
 select customer_id, count(*), sum(o_saleprice) from orders where o_saleprice >= 8000 group by customer_id having count(*) >= 2;
 -- 17. 김연아고객(고객번호 : 2) 총 구매액
@@ -737,11 +737,11 @@ select * from orders where not (o_orderdate >= '2023-07-04' and o_orderdate <= '
 select * from orders where o_orderdate < str_to_date('2023-07-04', '%Y-%m-%d') or o_orderdate > str_to_date('2023-07-07', '%Y-%m-%d');
 select * from orders where o_orderdate not between str_to_date('2023-07-04', '%Y-%m-%d') and str_to_date('2023-07-07', '%Y-%m-%d');
 -- 23. 고객, 주문 테이블 조인하여 고객번호 순으로 정렬
-select * from customer c, orders o where c.id = o.customer_id order by o.customer_id asc;
+select * from customer c, orders o where c.id = o.customer_id order by c.id asc;
 -- 24. 고객이름(CUSTOMER), 고객이 주문한 도서 가격(ORDERS) 조회 
 select c_name, o_saleprice from customer c, orders o where c.id = o.customer_id;
 -- 25. 고객별(GROUP)로 주문한 도서의 총 판매액(SUM)과 고객이름을 조회하고 조회 결과를 가나다 순으로 정렬 
-select sum(o_saleprice), c_name from customer c, orders o where c.id = o.customer_id group by c_name order by c_name asc;
+select c_name, sum(o_saleprice) from customer c, orders o where c.id = o.customer_id group by c_name order by c_name asc;
 -- 26. 고객명과 고객이 주문한 도서명을 조회(3테이블 조인)
 select c_name, b_bookname from book b, customer c, orders o where c.id = o.customer_id and b.id = o.book_id;
 -- 27. 2만원(SALEPRICE) 이상 도서를 주문한 고객의 이름과 도서명을 조회 
@@ -751,4 +751,4 @@ select c_name, sum(o_saleprice) from book b, customer c, orders o where (c.id = 
 -- 29. 손흥민 고객의 총 구매수량과 고객명을 함께 조회
 select c_name, count(*) from book b, customer c, orders o where (c.id = o.customer_id and b.id = o.book_id) and c_name ='손흥민';
 
-
+-- ------- 20240105
