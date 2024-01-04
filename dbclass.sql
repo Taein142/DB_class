@@ -573,4 +573,7 @@ insert into child3(id, c1, c2, p_id) values(3, 'ccc', 'ccc', 3);
 insert into child3(id, c1, c2, p_id) values(4, 'ddd', 'ddd', 5);
 select * from child3;
 
+-- 수정쿼리
+update child3 set c1='수정내용' where id=2; -- pk를 기준으로
+update child3 set c1='수정내용', c2='ㅎㅎㅎ' where id=3; -- 수정할 내용 추가할 때에는 and가 아닌 ,를 사용
 
