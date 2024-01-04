@@ -578,7 +578,13 @@ update child3 set c1='수정내용' where id=2; -- pk를 기준으로
 update child3 set c1='수정내용', c2='ㅎㅎㅎ' where id=3; -- 수정할 내용 추가할 때에는 and가 아닌 ,를 사용
 
 
+
+/*
 -- 실습 예제 문제
+각 테이블의 id는 pk로 지정하고 auto_increment 적용
+orders table의 customer_id는 customer table의 id를 참조하고 book_id는 book table의 id를 참조하도록 함 
+*/
+
 -- book table
 drop table if exists book;
 create table book(
@@ -622,17 +628,17 @@ create table orders(
     book_id bigint,
     o_saleprice int,
     o_orderdate date,
-    constraint fk_customerorders foreign key(customer_id) references customer(id) on delete set null,
-    constraint fk_bookorders foreign key(book_id) references book(id) on delete set null
+    constraint fk_customer foreign key(customer_id) references customer(id) on delete set null,
+    constraint fk_book foreign key(book_id) references book(id) on delete set null
 );
 select * from orders;
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (1, 1, 6000, '2023-07-01');
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (1, 3, 21000, '2023-07-03');
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (2, 5, 8000, '2023-07-03');
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (3, 6, 6000, '2023-07-04');
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (4, 2, 20000, '2023-07-05');
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (1, 2, 12000, '2023-07-07');
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (4, 8, 13000, '2023-07-07');
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (3, 10, 12000, '2023-07-08');
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (2, 10, 7000, '2023-07-09');
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (3, 8, 13000, '2023-07-10');
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (1, 1, 6000, str_do_date('2023-07-01', '%Y-%m-%d'));
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (1, 3, 21000, str_do_date('2023-07-03', '%Y-%m-%d'));
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (2, 5, 8000, str_do_date('2023-07-03', '%Y-%m-%d'));
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (3, 6, 6000, str_do_date('2023-07-04', '%Y-%m-%d'));
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (4, 2, 20000, str_do_date('2023-07-05', '%Y-%m-%d'));
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (1, 2, 12000, str_do_date('2023-07-07', '%Y-%m-%d'));
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (4, 8, 13000, str_do_date('2023-07-07', '%Y-%m-%d'));
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (3, 10, 12000, str_do_date('2023-07-08', '%Y-%m-%d'));
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (2, 10, 7000, str_do_date('2023-07-09', '%Y-%m-%d'));
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (3, 8, 13000, str_do_date('2023-07-10', '%Y-%m-%d'));
