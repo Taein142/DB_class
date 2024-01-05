@@ -782,4 +782,25 @@ select c.c_name, avg(o.o_saleprice) from orders o, customer c where c.id= o.cust
 update customer set c_address='대한민국 인천' where id = 5;
 -- 35. 김씨 성을 가진 고객이 주문한 총 판매액 조회
 select sum(o_saleprice) from customer c, orders o where o.customer_id = c.id and c_name like '김%';
-select sum(o_saleprice) from orders where customer_id in (select id from customer where c_name like '김%')
+select sum(o_saleprice) from orders where customer_id in (select id from customer where c_name like '김%');
+
+-- alter: 테이블의 구조를 변경할 때 (컬럼이름 변경, 타입 변경, 컬럼삭제, 제약조건 추가 등)
+drop table if exists student;
+create table student(
+	id bigint,
+    s_name varchar(20),
+    s_mobile int
+);
+-- 테이블의 구조 확인
+desc student;
+desc book;
+-- 기존 컬럼에 제약조건 추가
+alter table student add constraint primary key(id);
+-- 기존 컬럼 타입 변경
+alter table student modify s_mobile varchar(30);
+-- 컬럼 추가
+alter table student add s_major varchar(30);
+-- 컬럼 이름 변경
+alter table student change s_mobile s_phone varchar(30);
+-- 컬럼 삭제
+alter table student drop s_major; 
