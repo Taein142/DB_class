@@ -842,8 +842,8 @@ create table board_table(
 drop table if exists board_file_table;
 create table board_file_table(
 	id bigint auto_increment,
-    original_file_name varchar(100),
-    started_file_name varchar(100),
+    original_file_name varchar(100), -- 사용자가 업로드한 파일의이름
+    started_file_name varchar(100),  -- 관리용 파일 이름(파일이름 생성 로직은 backend에서)
     board_id bigint,
     constraint pk_board_file_table primary key(id),
     constraint fk_board_file_table_b foreign key(board_id) references board_table(id) on delete cascade
@@ -862,16 +862,53 @@ create table comment_table(
     constraint fk_comment_table_m foreign key(member_id) references member_table(id) on delete cascade
 );
 
-drop table if exists good_table;
+drop table if exists good_table; -- 좋아요
 create table good_table(
-	id bigint auto_increment,
-    comment_id bigint,
+	id bigint auto_increment, -- 누가
+    comment_id bigint,        -- 어떤 댓글에 좋아요를 했는가
     member_id bigint,
     constraint pk_good_table primary key(id),
     constraint fk_good_table_c foreign key(comment_id) references comment_table(id) on delete cascade,
     constraint fk_good_table_m foreign key(member_id) references member_table(id) on delete cascade
 );
 
+/*
+-- 회원 기능
+-- 1. 회원가입(임의의 회원3명 가입)
+-- 2. 이메일 중복체크 
+-- 3. 로그인
+-- 4. 전체 회원 목록 조회 
+-- 5. 특정 회원만 조회 
+-- 6. 내정보 수정하기(6.1, 6.2에 해당하는 쿼리문작성)
+-- 6.1 회원정보 수정화면 요청(회원정보 수정 페이지를 보여준다고 가정했을 때 필요한 쿼리) 
+-- 6.2 회원정보 수정 처리(비밀번호를 변경한다는 상황)
+-- 7. 회원 삭제 또는 탈퇴 
+*/
+-- 1. 회원가입(임의의 회원3명 가입)
+insert into member_table(member_email, member_name, member_password) values('aaa@aaa.com','가나다','1234');
+insert into member_table(member_email, member_name, member_password) values('bbb@bbb.com','라마바','1234');
+insert into member_table(member_email, member_name, member_password) values('ccc@ccc.com','사아자','1234');
+-- 2. 이메일 중복체크 
+select * from member_table;
+-- 가입된 이메일로 가입하려고 한다면
+select member_email from member_table where member_email = 'aaa@aaa.com';
+-- 가입되어 있지 않은 이메일로 가입하려고 한다면
+select member_email from member_table where member_email = 'ddd@ddd.com';
+-- 3. 로그인
+select member_email, member_password from member_table where member_email = 'aaa@aaa.com' and member_password = '1234'; 
+-- 4. 전체 회원 목록 조회 
+select * from member_table;
+-- 5. 특정 회원만 조회 
+select * from member_table where id=1;
+select * from member_table where member_email = 'ccc@ccc.com';
+-- 6. 내정보 수정하기(6.1, 6.2에 해당하는 쿼리문작성)
+-- 6.1 회원정보 수정화면 요청(회원정보 수정 페이지를 보여준다고 가정했을 때 필요한 쿼리) 
+select * from member_table where id=2;
+-- 6.2 회원정보 수정 처리(비밀번호를 변경한다는 상황)
+update member_table set member_password='5678' where id=2;
+select * from member_table;
+-- 7. 회원 삭제 또는 탈퇴
+delete from member_table where id = 3;
 
 
 
