@@ -804,4 +804,83 @@ alter table student add s_major varchar(30);
 alter table student change s_mobile s_phone varchar(30);
 -- 컬럼 삭제
 alter table student drop s_major; 
--- reverse engineer = 역설계
+
+-- 주어진 다이어그램을 보고 테이블 만들기
+drop table if exists member_table;
+create table member_table(
+	id bigint auto_increment ,
+	member_email varchar(30) not null unique,
+	member_name varchar(30)  not null,
+	member_password varchar(30)  not null,
+    constraint pk_customer primary key(id)
+);
+
+drop table if exists category_table;
+create table category_table(
+	id bigint auto_increment,
+    category_name varchar(20) not null unique,
+    constraint pk_category_table primary key(id)
+);
+
+drop table if exists board_table;
+create table board_table(
+	id bigint auto_increment,
+    board_title varchar(50) not null,
+    board_writer varchar(30) not null,
+    board_contents varchar(500),
+    board_hits int default 0,
+    board_created_at datetime default now(),
+    board_updated_at datetime on update now(),
+    board_file_attached int default 0, -- 파일첨부 여부(없으면0, 있으면1)
+    member_id bigint,
+    category_id bigint,
+    constraint pk_board_table primary key(id), 
+    constraint fk_board_talbe_m foreign key(member_id) references member_table(id) on delete cascade,
+    constraint fk_board_talbe_c foreign key(category_id) references category_table(id) on delete set null
+);
+
+drop table if exists board_file_table;
+create table board_file_table(
+	id bigint auto_increment,
+    original_file_name varchar(100),
+    started_file_name varchar(100),
+    board_id bigint,
+    constraint pk_board_file_table primary key(id),
+    constraint fk_board_file_table_b foreign key(board_id) references board_table(id) on delete cascade
+);
+
+drop table if exists comment_table;
+create table comment_table(
+	id bigint auto_increment,
+    comment_writer varchar(30) not null,
+    comment_contents varchar(200) not null,
+    comment_created_at datetime default now(),
+    board_id bigint,
+    member_id bigint,
+    constraint pk_comment_table primary key(id),
+    constraint fk_comment_table_b foreign key(board_id) references board_table(id) on delete cascade,
+    constraint fk_comment_table_m foreign key(member_id) references member_table(id) on delete cascade
+);
+
+drop table if exists good_table;
+create table good_table(
+	id bigint auto_increment,
+    comment_id bigint,
+    member_id bigint,
+    constraint pk_good_table primary key(id),
+    constraint fk_good_table_c foreign key(comment_id) references comment_table(id) on delete cascade,
+    constraint fk_good_table_m foreign key(member_id) references member_table(id) on delete cascade
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
