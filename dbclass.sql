@@ -587,32 +587,35 @@ orders table의 customer_id는 customer table의 id를 참조하고 book_id는 b
 
 -- book table
 drop table if exists book;
-create table book(
-	id bigint auto_increment primary key,
-    b_bookname varchar(30) not null,
-    b_publisher varchar(20) not null,
-    b_price int not null
+create table book (
+  id      bigint auto_increment,
+  b_bookname    varchar(40) not null,
+  b_publisher   varchar(40) not null,
+  b_price       int,
+  constraint pk_book primary key(id)
 );
 
 -- custmoer table
 drop table if exists customer;
-create table customer(
-	id bigint auto_increment primary key,
-    c_name varchar(20) not null,
-    c_address varchar(20) not null,
-    c_phone varchar(13)
+create table  customer (
+  id      bigint auto_increment,
+  c_name        varchar(40) not null,
+  c_address     varchar(50) not null,
+  c_phone       varchar(20),
+  constraint pk_customer primary key(id)
 );
 
 -- orders table
 drop table if exists orders;
-create table orders(
-	id bigint auto_increment primary key,
-    customer_id bigint,
-    book_id bigint,
-    o_saleprice int,
-    o_orderdate date,
-    constraint fk_customer foreign key(customer_id) references customer(id) on delete set null,
-    constraint fk_book foreign key(book_id) references book(id) on delete set null
+create table orders (
+  id bigint auto_increment,
+  customer_id  bigint,
+  book_id  bigint, 
+  o_saleprice int,
+  o_orderdate date,
+  constraint pk_orders primary key(id),
+  constraint fk_orders_c foreign key(customer_id) references customer(id),
+  constraint fk_orders_b foreign key(book_id) references book(id)
 );
 
 
@@ -636,16 +639,16 @@ insert into customer(c_name, c_address, c_phone) values ('류현진','캐나다 
 insert into customer(c_name, c_address, c_phone) values ('이강인','프랑스 파리', null);
 
 select * from orders;
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (1, 1, 6000, str_do_date('2023-07-01', '%Y-%m-%d'));
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (1, 3, 21000, str_do_date('2023-07-03', '%Y-%m-%d'));
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (2, 5, 8000, str_do_date('2023-07-03', '%Y-%m-%d'));
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (3, 6, 6000, str_do_date('2023-07-04', '%Y-%m-%d'));
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (4, 2, 20000, str_do_date('2023-07-05', '%Y-%m-%d'));
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (1, 2, 12000, str_do_date('2023-07-07', '%Y-%m-%d'));
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (4, 8, 13000, str_do_date('2023-07-07', '%Y-%m-%d'));
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (3, 10, 12000, str_do_date('2023-07-08', '%Y-%m-%d'));
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (2, 10, 7000, str_do_date('2023-07-09', '%Y-%m-%d'));
-insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (3, 8, 13000, str_do_date('2023-07-10', '%Y-%m-%d'));
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (1, 1, 6000, str_to_date('2023-07-01','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (1, 3, 21000, str_to_date('2023-07-03','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (2, 5, 8000, str_to_date('2023-07-03','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (3, 6, 6000, str_to_date('2023-07-04','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (4, 7, 20000, str_to_date('2023-07-05','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (1, 2, 12000, str_to_date('2023-07-07','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (4, 8, 13000, str_to_date('2023-07-07','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (3, 10, 12000, str_to_date('2023-07-08','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (2, 10, 7000, str_to_date('2023-07-09','%Y-%m-%d')); 
+insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (3, 8, 13000, str_to_date('2023-07-10','%Y-%m-%d')); 
 
 /*
 	추가 문제
@@ -680,6 +683,12 @@ insert into orders(customer_id, book_id, o_saleprice, o_orderdate) values (3, 8,
 -- 27. 2만원(SALEPRICE) 이상 도서를 주문한 고객의 이름과 도서명을 조회 
 -- 28. 손흥민 고객의 총 구매액과 고객명을 함께 조회
 -- 29. 손흥민 고객의 총 구매수량과 고객명을 함께 조회
+-- 30. 가장 비싼 도서의 이름을 조회 
+-- 31. 책을 구매한 이력이 있는 고객의 이름을 조회
+-- 32. 도서의 가격(PRICE)과 판매가격(SALEPRICE)의 차이가 가장 많이 나는 주문 조회 
+-- 33. 고객별 평균 구매 금액이 도서의 판매 평균 금액 보다 높은 고객의 이름 조회 
+-- 34. 고객번호가 5인 고객의 주소를 대한민국 인천으로 변경 
+-- 35. 김씨 성을 가진 고객이 주문한 총 판매액 조회
 */
 -- 1. 모든 도서의 가격과 도서명 조회 
 select b_bookname, b_price from book;
@@ -752,3 +761,25 @@ select c_name, sum(o_saleprice) from book b, customer c, orders o where (c.id = 
 select c_name, count(*) from book b, customer c, orders o where (c.id = o.customer_id and b.id = o.book_id) and c_name ='손흥민';
 
 -- ------- 20240105
+
+-- 30. 가장 비싼 도서의 이름을 조회 
+select b_bookname from book where b_price = (select max(b_price) from book);
+-- 31. 책을 구매한 이력이 있는 고객의 이름을 조회
+select distinct c_name from customer c, orders o where c.id=o.customer_id;
+-- 32. 도서의 가격(PRICE)과 판매가격(SALEPRICE)의 차이가 가장 많이 나는 주문 조회
+select max(b_price - o_saleprice) from orders o , book b where o.book_id = b.id;
+select * from orders o , book b where o.book_id = b.id and b.b_price-o.o_saleprice=6000;
+select * from orders o , book b where o.book_id = b.id
+	and b.b_price-o.o_saleprice=(select max(b_price - o_saleprice) from orders o , book b where o.book_id = b.id);
+-- 33. 고객별 평균 구매 금액이 도서의 판매 평균 금액 보다 높은 고객의 이름 조회 
+select avg(o_saleprice) from orders; -- 도서 판매 평균 금액(11800원)
+select c.c_name, avg(o.o_saleprice) from orders o, customer c where c.id= o.customer_id group by c.c_name; -- 고객별 평균 구매 금액(group by)
+select c.c_name, avg(o.o_saleprice) from orders o, customer c where c.id= o.customer_id
+	group by c.c_name having avg(o.o_saleprice) >11800;
+    select c.c_name, avg(o.o_saleprice) from orders o, customer c where c.id= o.customer_id
+	group by c.c_name having avg(o.o_saleprice) > (select avg(o.o_saleprice) from orders o);
+-- 34. 고객번호가 5인 고객의 주소를 대한민국 인천으로 변경 
+update customer set c_address='대한민국 인천' where id = 5;
+-- 35. 김씨 성을 가진 고객이 주문한 총 판매액 조회
+select sum(o_saleprice) from customer c, orders o where o.customer_id = c.id and c_name like '김%';
+select sum(o_saleprice) from orders where customer_id in (select id from customer where c_name like '김%')
