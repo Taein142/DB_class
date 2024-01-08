@@ -971,15 +971,17 @@ insert into board_file_table(original_file_name, stored_file_name, board_id)
 	values ('참가 덱레시피', '202401080001_참가_덱레시피.jpg', 8);
 insert board_table(board_title, board_writer, board_contents, board_file_attached, member_id, category_id)
 	values('KDM 2주차 결과', 'bbb@bbb.com', '오늘 KDM 참가 결과입니다. 우숭!', 1, 2, 1);
+insert into board_file_table(original_file_name, stored_file_name, board_id) 
+	values ('참가 덱레시피(2주차)', '202401150001_참가_덱레시피.jpg', 9);
 -- 페이징 처리를 위한 추가 게시물 작성
-insert board_table(board_title, board_writer, board_contents, board_file_attached, member_id, category_id)
-	values('녹하브 레시피', 'ccc@ccc.com', '녹하브 덱 레시피입니다.', 1, 3, 1);
-insert board_table(board_title, board_writer, board_contents, board_file_attached, member_id, category_id)
-	values('자하브 레시피', 'aaa@aaa.com', '레베몬4장, 아이즈몬4장, ...', 1, 1, 1);
-insert board_table(board_title, board_writer, board_contents, board_file_attached, member_id, category_id)
-	values('흑하브 레시피', 'ccc@ccc.com', '이건 덱이 아니다. 페기확정.', 1, 3, 1);
-insert board_table(board_title, board_writer, board_contents, board_file_attached, member_id, category_id)
-	values('적하브 레시피', 'bbb@bbb.com', '아그니몬4장, 아그니몬 2장, ...', 1, 3, 1);
+insert board_table(board_title, board_writer, board_contents, member_id, category_id)
+	values('녹하브 덱레시피', 'ccc@ccc.com', '녹하브 덱 레시피입니다.', 3, 1);
+insert board_table(board_title, board_writer, board_contents, member_id, category_id)
+	values('자하브 덱레시피', 'aaa@aaa.com', '레베몬4장, 아이즈몬4장, ...', 1, 1);
+insert board_table(board_title, board_writer, board_contents, member_id, category_id)
+	values('흑하브 덱레시피', 'ccc@ccc.com', '이건 덱이 아니다. 페기확정.', 3, 1);
+insert board_table(board_title, board_writer, board_contents, member_id, category_id)
+	values('적하브 덱레시피', 'bbb@bbb.com', '아그니몬4장, 아그니몬 2장, ...', 3, 1);
 -- 2. 게시글 목록 조회 
 -- 2.1 전체글 목록 조회
 select * from board_table;
@@ -993,6 +995,8 @@ select * from category_table c, board_table b where b.category_id = c.id;
 update board_table set board_hits = board_hits+1 where id=2;
 select * from board_table where id = 2;
 -- 3.1. 파일 첨부된 게시글 조회 (게시글 내용과 파일을 함께)
+-- 파일 첨보된 게시글 목록 조회
+select * from board_table where board_file_attached =1;
 update board_table set board_hits = board_hits+1 where id=8;
 -- 게시글 내용만 가져옴
 select * from board_table where id = 8;
@@ -1025,12 +1029,12 @@ select * from board_table orders order by id desc limit 3 offset 6;
 -- 8. 검색(글제목 기준)
 select * from board_table where board_title like '%하브%';
 -- 8.1 검색결과를 오래된 순으로 조회 
-select * from board_table where board_title like '%하브%' order by board_created_at asc;
+select * from board_table where board_title like '%레시피%' order by board_created_at asc;
 -- 8.2 검색결과를 조회수 내림차순으로 조회 
-select * from board_table where board_title like '%하브%' order by board_hits desc;
+select * from board_table where board_title like '%레시피%' order by board_hits desc;
 -- 8.3 검색결과 페이징 처리
-select * from board_table where board_title like '%하브%' order by board_created_at asc limit 0,3;
-select * from board_table where board_title like '%하브%' order by board_created_at asc limit 3,6;
+select * from board_table where board_title like '%레시피%' order by board_created_at asc limit 0,3;
+select * from board_table where board_title like '%레시피%' order by board_created_at asc limit 3,6;
 
 
 
