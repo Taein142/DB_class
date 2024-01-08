@@ -981,7 +981,15 @@ insert board_table(board_title, board_writer, board_contents, member_id, categor
 insert board_table(board_title, board_writer, board_contents, member_id, category_id)
 	values('흑하브 덱레시피', 'ccc@ccc.com', '이건 덱이 아니다. 페기확정.', 3, 1);
 insert board_table(board_title, board_writer, board_contents, member_id, category_id)
-	values('적하브 덱레시피', 'bbb@bbb.com', '아그니몬4장, 아그니몬 2장, ...', 3, 1);
+	values('적하브 덱레시피', 'bbb@bbb.com', '아그니몬4장, 아그니몬 2장, ...', 2, 1);
+insert board_table(board_title, board_writer, board_contents, member_id, category_id)
+	values('돌고라몬 덱레시피', 'bbb@bbb.com', '돌몬4장, 돌고라몬 4장, ...', 1, 1);
+insert board_table(board_title, board_writer, board_contents, member_id, category_id)
+	values('에오스몬 덱레시피', 'bbb@bbb.com', '에오스몬14장, 모르프몬 4장, ...', 3, 1);
+insert board_table(board_title, board_writer, board_contents, member_id, category_id)
+	values('일판 적하브 덱레시피', 'bbb@bbb.com', '아그니몬4장, 아그니몬 2장, ...', 3, 1);
+insert board_table(board_title, board_writer, board_contents, member_id, category_id)
+	values('일판 저스티몬 덱레시피', 'aaa@aaa.com', '아그니몬4장, 아그니몬 2장, ...', 2, 1);
 -- 2. 게시글 목록 조회 
 -- 2.1 전체글 목록 조회
 select * from board_table;
@@ -1020,21 +1028,34 @@ delete from board_table where id=(select id from (select id from board_table whe
 delete from board_table where id = 4;
 -- 7. 페이징 처리(한 페이지당 글 3개씩)
 select * from board_table order by id desc;
+select * from board_table order by id desc limit 0,3;
+select * from board_table order by id desc limit 3,3;
+select * from board_table order by id desc limit 6,3;
+
+select * from board_table order by id desc limit 0,5; -- 1페이지
+select * from board_table order by id desc limit 5,5; -- 2페이지
+select * from board_table order by id desc limit 10,5; -- 3페이지
+-- 한 페이지당 3개씩 출력하는 경우 전체 글 갯수가 20개라면 필요한 페이지 갯수는? => 7
+select count(*) from board_table;
+select count(*)/3 from board_table;
+select count(*)/5 from board_table;
 -- 7.1. 첫번째 페이지
 select * from board_table order by id desc limit 3;
 -- 7.2. 두번째 페이지
 select * from board_table orders order by id desc limit 3 offset 3;
 -- 7.3. 세번째 페이지 
 select * from board_table orders order by id desc limit 3 offset 6;
+select * from board_table orders order by id desc limit 6,3; -- 위와 결과는 같음.
 -- 8. 검색(글제목 기준)
-select * from board_table where board_title like '%하브%';
+select * from board_table where board_title like '%레시피%';
 -- 8.1 검색결과를 오래된 순으로 조회 
 select * from board_table where board_title like '%레시피%' order by board_created_at asc;
 -- 8.2 검색결과를 조회수 내림차순으로 조회 
 select * from board_table where board_title like '%레시피%' order by board_hits desc;
 -- 8.3 검색결과 페이징 처리
-select * from board_table where board_title like '%레시피%' order by board_created_at asc limit 0,3;
-select * from board_table where board_title like '%레시피%' order by board_created_at asc limit 3,6;
+select * from board_table where board_title like '%레시피%' order by board_created_at desc limit 0,5;
+select * from board_table where board_title like '%레시피%' order by board_created_at desc limit 5,5;
+select * from board_table where board_title like '%레시피%' order by board_created_at desc limit 10,5;
 
 
 
