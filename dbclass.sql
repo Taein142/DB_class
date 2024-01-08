@@ -843,7 +843,7 @@ drop table if exists board_file_table;
 create table board_file_table(
 	id bigint auto_increment,
     original_file_name varchar(100), -- 사용자가 업로드한 파일의이름
-    started_file_name varchar(100),  -- 관리용 파일 이름(파일이름 생성 로직은 backend에서)
+    stored_file_name varchar(100),  -- 관리용 파일 이름(파일이름 생성 로직은 backend에서)
     board_id bigint,
     constraint pk_board_file_table primary key(id),
     constraint fk_board_file_table_b foreign key(board_id) references board_table(id) on delete cascade
@@ -966,8 +966,20 @@ insert board_table(board_title, board_writer, board_contents, member_id, categor
 -- 2번 회원이 파일있는 자유게시판 글 2개 작성
 insert board_table(board_title, board_writer, board_contents, board_file_attached, member_id, category_id)
 	values('KDM 1주차 결과', 'bbb@bbb.com', '오늘 KDM 참가 결과입니다. 토찍...', 1, 2, 1);
+-- 첨부된 파일 정보를 board_file_table에 저장
+insert into board_file_table(original_file_name, stored_file_name, board_id) 
+	values ('참가 덱레시피', '202401080001_참가_덱레시피.jpg', 8);
 insert board_table(board_title, board_writer, board_contents, board_file_attached, member_id, category_id)
 	values('KDM 2주차 결과', 'bbb@bbb.com', '오늘 KDM 참가 결과입니다. 우숭!', 1, 2, 1);
+-- 페이징 처리를 위한 추가 게시물 작성
+insert board_table(board_title, board_writer, board_contents, board_file_attached, member_id, category_id)
+	values('녹하브 레시피', 'ccc@ccc.com', '녹하브 덱 레시피입니다.', 1, 3, 1);
+insert board_table(board_title, board_writer, board_contents, board_file_attached, member_id, category_id)
+	values('자하브 레시피', 'aaa@aaa.com', '레베몬4장, 아이즈몬4장, ...', 1, 1, 1);
+insert board_table(board_title, board_writer, board_contents, board_file_attached, member_id, category_id)
+	values('흑하브 레시피', 'ccc@ccc.com', '이건 덱이 아니다. 페기확정.', 1, 3, 1);
+insert board_table(board_title, board_writer, board_contents, board_file_attached, member_id, category_id)
+	values('적하브 레시피', 'bbb@bbb.com', '아그니몬4장, 아그니몬 2장, ...', 1, 3, 1);
 -- 2. 게시글 목록 조회 
 -- 2.1 전체글 목록 조회
 select * from board_table;
@@ -981,16 +993,27 @@ select * from category_table c, board_table b where b.category_id = c.id;
 update board_table set board_hits = board_hits+1 where id=2;
 select * from board_table where id = 2;
 -- 3.1. 파일 첨부된 게시글 조회 (게시글 내용과 파일을 함께)
-select * from board_table where board_file_attached=1;
+update board_table set board_hits = board_hits+1 where id=8;
+-- 게시글 내용만 가져옴
+select * from board_table where id = 8;
+-- 해당 게시글에 첨부된 파일 정보 가져옴
+select * from board_file_table where board_id=8;
+-- join 사용
+select * from board_table b, board_file_table bf where b.id=bf.board_id and b.id=8;
 -- 4. 1번 회원이 자유게시판에 첫번째로 작성한 게시글의 제목, 내용 수정
-update board_table set board_title = '일판 시큐컨 덱 레시피', board_contents ='디피트4장, 게이트키퍼4장, ...' 
-	where id = (select id from (select id from board_table where member_id=1 order by id asc limit 1) as subquery);  -- 실패
 select * from board_table where member_id=1;
--- 5. 2번 회원이 자유게시판에 첫번째로 작성한 게시글 삭제 
+update board_table set board_title = '일판 시큐컨 덱 레시피', board_contents ='디피트4장, 게이트키퍼4장, ...' 
+	where id = (select id from (select id from board_table where member_id=1 order by id asc limit 1) as subquery);
+-- 다른 방법
+select * from board_table where member_id=1;
+update board_table set board_title = '일판 시큐컨 덱 레시피', board_contents ='디피트4장, 게이트키퍼4장, ...' where id = 1;
+-- 5. 2번 회원이 자유게시판에 첫번째로 작성한 게시글 삭제
+select * from board_table where member_id=2;
 select id from board_table where member_id=2 order by id asc limit 1;
 select * from board_table where id = (select id from board_table where member_id=2 order by id asc limit 1);
 delete from board_table where id=(select id from (select id from board_table where member_id=2 order by id asc limit 1) as subquery);
-select * from board_table where member_id=2;
+-- 다른 방법
+delete from board_table where id = 4;
 -- 7. 페이징 처리(한 페이지당 글 3개씩)
 select * from board_table order by id desc;
 -- 7.1. 첫번째 페이지
@@ -1006,7 +1029,8 @@ select * from board_table where board_title like '%하브%' order by board_creat
 -- 8.2 검색결과를 조회수 내림차순으로 조회 
 select * from board_table where board_title like '%하브%' order by board_hits desc;
 -- 8.3 검색결과 페이징 처리
-select * from board_table where board_title like '%하브%' order by board_title asc limit 0,5;
+select * from board_table where board_title like '%하브%' order by board_created_at asc limit 0,3;
+select * from board_table where board_title like '%하브%' order by board_created_at asc limit 3,6;
 
 
 
