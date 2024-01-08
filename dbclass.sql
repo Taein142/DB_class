@@ -909,11 +909,104 @@ update member_table set member_password='5678' where id=2;
 select * from member_table;
 -- 7. 회원 삭제 또는 탈퇴
 delete from member_table where id = 3;
+/*
+-- 게시글 카테고리 
+-- 게시판 카테고리는 자유게시판, 공지사항, 가입인사 세가지가 있음.
+-- 카테고리 세가지 미리 저장
 
+-- 게시판 기능 
+-- 1. 게시글 작성(파일첨부 x) 3개 이상 
+-- 1번 회원이 자유게시판 글 2개, 공지사항 글 1개 작성 
+-- 2번 회원이 자유게시판 글 3개 작성
+-- 3번 회원이 가입인사 글 1개 작성 
+-- 1.1. 게시글 작성(파일첨부 o)
+-- 2번 회원이 파일있는 자유게시판 글 2개 작성
+-- 2. 게시글 목록 조회 
+-- 2.1 전체글 목록 조회
+-- 2.2 자유게시판 목록 조회 
+-- 2.3 공지사항 목록 조회 
+-- 2.4 목록 조회시 카테고리 이름도 함께 나오게 조회
+-- 3. 2번 게시글 조회 (조회수 처리 필요함)
+-- 3.1. 파일 첨부된 게시글 조회 (게시글 내용과 파일을 함께)
+-- 4. 1번 회원이 자유게시판에 첫번째로 작성한 게시글의 제목, 내용 수정
+-- 5. 2번 회원이 자유게시판에 첫번째로 작성한 게시글 삭제 
+-- 7. 페이징 처리(한 페이지당 글 3개씩)
+-- 7.1. 첫번째 페이지
+-- 7.2. 두번째 페이지
+-- 7.3. 세번째 페이지 
+-- 8. 검색(글제목 기준)
+-- 8.1 검색결과를 오래된 순으로 조회 
+-- 8.2 검색결과를 조회수 내림차순으로 조회 
+-- 8.3 검색결과 페이징 처리
+*/ 
+insert category_table(category_name) values('자유게시판');
+insert category_table(category_name) values('공지사항');
+insert category_table(category_name) values('가입인사');
+select * from category_table order by id asc;
 
-
-
-
+-- 1. 게시글 작성(파일첨부 x) 3개 이상 
+-- 1번 회원이 자유게시판 글 2개, 공지사항 글 1개 작성 
+insert board_table(board_title, board_writer, board_contents, member_id, category_id)
+	values('시큐컨 덱레시피', 'aaa@aaa.com', '루체몬 4장, 루체폴4장, 디피트4장, ...', 1, 1);
+insert board_table(board_title, board_writer, board_contents, member_id, category_id)
+	values('황하브 덱레시피', 'aaa@aaa.com', '페어리몬4장, 슈츠몬4장, 제트실피몬4장, ...', 1, 1);
+insert board_table(board_title, board_writer, board_contents, member_id, category_id) 
+	values('게시판 규칙', 'aaa@aaa.com', '게시판 규칙에 관한 공지사항입니다. 이하의 규칙들은 꼭 준수해주시길 바랍니다. ...', 1, 2);
+-- 2번 회원이 자유게시판 글 3개 작성
+insert board_table(board_title, board_writer, board_contents, member_id, category_id)
+	values('오메가몬 덱레시피', 'bbb@bbb.com', '오메가몬 3장, 오메가몬 alter-s 2장, ...', 2, 1);
+insert board_table(board_title, board_writer, board_contents, member_id, category_id)
+	values('청하브 덱레시피', 'bbb@bbb.com', '스트라비몬4장, 스트라비몬4장, ...', 2, 1);
+insert board_table(board_title, board_writer, board_contents, member_id, category_id)
+	values('디아블로몬 덱레시피', 'bbb@bbb.com', '디아블로몬4장, 디아블로몬3장, ...', 2, 1);
+-- 3번 회원이 가입인사 글 1개 작성 
+insert board_table(board_title, board_writer, board_contents, member_id, category_id)
+	values('안녕하세요', 'ccc@ccc.com', '안녕하세요 이번에 새로 가입한 사아자 라고 합니다. 잘부탁드립니다.', 3, 3);
+-- 1.1. 게시글 작성(파일첨부 o)
+-- 2번 회원이 파일있는 자유게시판 글 2개 작성
+insert board_table(board_title, board_writer, board_contents, board_file_attached, member_id, category_id)
+	values('KDM 1주차 결과', 'bbb@bbb.com', '오늘 KDM 참가 결과입니다. 토찍...', 1, 2, 1);
+insert board_table(board_title, board_writer, board_contents, board_file_attached, member_id, category_id)
+	values('KDM 2주차 결과', 'bbb@bbb.com', '오늘 KDM 참가 결과입니다. 우숭!', 1, 2, 1);
+-- 2. 게시글 목록 조회 
+-- 2.1 전체글 목록 조회
+select * from board_table;
+-- 2.2 자유게시판 목록 조회 
+select * from board_table where category_id = 1;
+-- 2.3 공지사항 목록 조회 
+select * from board_table where category_id = 2;
+-- 2.4 목록 조회시 카테고리 이름도 함께 나오게 조회
+select * from category_table c, board_table b where b.category_id = c.id;
+-- 3. 2번 게시글 조회 (조회수 처리 필요함)
+update board_table set board_hits = board_hits+1 where id=2;
+select * from board_table where id = 2;
+-- 3.1. 파일 첨부된 게시글 조회 (게시글 내용과 파일을 함께)
+select * from board_table where board_file_attached=1;
+-- 4. 1번 회원이 자유게시판에 첫번째로 작성한 게시글의 제목, 내용 수정
+update board_table set board_title = '일판 시큐컨 덱 레시피', board_contents ='디피트4장, 게이트키퍼4장, ...' 
+	where id = (select id from (select id from board_table where member_id=1 order by id asc limit 1) as subquery);  -- 실패
+select * from board_table where member_id=1;
+-- 5. 2번 회원이 자유게시판에 첫번째로 작성한 게시글 삭제 
+select id from board_table where member_id=2 order by id asc limit 1;
+select * from board_table where id = (select id from board_table where member_id=2 order by id asc limit 1);
+delete from board_table where id=(select id from (select id from board_table where member_id=2 order by id asc limit 1) as subquery);
+select * from board_table where member_id=2;
+-- 7. 페이징 처리(한 페이지당 글 3개씩)
+select * from board_table order by id desc;
+-- 7.1. 첫번째 페이지
+select * from board_table order by id desc limit 3;
+-- 7.2. 두번째 페이지
+select * from board_table orders order by id desc limit 3 offset 3;
+-- 7.3. 세번째 페이지 
+select * from board_table orders order by id desc limit 3 offset 6;
+-- 8. 검색(글제목 기준)
+select * from board_table where board_title like '%하브%';
+-- 8.1 검색결과를 오래된 순으로 조회 
+select * from board_table where board_title like '%하브%' order by board_created_at asc;
+-- 8.2 검색결과를 조회수 내림차순으로 조회 
+select * from board_table where board_title like '%하브%' order by board_hits desc;
+-- 8.3 검색결과 페이징 처리
+select * from board_table where board_title like '%하브%' order by board_title asc limit 0,5;
 
 
 
