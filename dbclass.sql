@@ -1351,11 +1351,11 @@ select concat(
 from tbl_vote_202005;
 
 -- 후보자등수
-select m.m_no as '후보번호', m.m_name as '성명' , count(v_confirm) as '총투표건수'
+select m.m_no as '후보번호', m.m_name as '성명', count(v_confirm) as '총투표건수'
 from tbl_vote_202005 v, tbl_member_202005 m
-where v.m_no = m.m_no
+where v.m_no = m.m_no and v_confirm = 'Y'
 group by v.m_no
-order by count(v_confirm) desc;
+order by count(v_confirm) desc, v.m_no asc;
 
 
 
