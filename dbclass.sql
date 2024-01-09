@@ -1274,8 +1274,8 @@ select concat(p_tel1, '-', p_tel2, '-', p_tel3) as 대표전화 from tbl_party_2
 select v_name as '성명',
 	   concat(
 			  case when substr(v_jumin,7,1) = 1 or 2 then '19'
-			  when substr(v_jumin,7,1) in(3,4) then '20'
-			  end,
+				   when substr(v_jumin,7,1) in(3,4) then '20'
+				   end,
 			  substr(v_jumin,1,2),'년', substr(v_jumin,3,2),'월', substr(v_jumin,5,2),'일생'
 	   )
        as '생년월일',
