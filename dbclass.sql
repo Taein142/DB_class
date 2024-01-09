@@ -1355,7 +1355,7 @@ from tbl_vote_202005;
 select m.m_no as '후보번호', m.m_name as '성명', count(v_confirm) as '총투표건수'
 from tbl_vote_202005 v, tbl_member_202005 m
 where v.m_no = m.m_no and v_confirm = 'Y'
-group by v.m_no
+group by v.m_no, m.m_name
 order by count(v_confirm) desc, v.m_no asc;
 
 
