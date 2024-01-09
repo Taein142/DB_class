@@ -1288,13 +1288,11 @@ select v_name as '성명',
 						 end,
 					substr(v_jumin,1,2)
 					),
-             '세'
+			'세'
 	   ) as '나이',
-       concat(	          
-              case when substr(v_jumin,7,1) in (1,3) then '남'
-                   when substr(v_jumin,7,1) in (2,4) then '여'
-                   end             
-	   ) as '성별',
+       case when substr(v_jumin,7,1) in (1,3) then '남'
+            when substr(v_jumin,7,1) in (2,4) then '여'
+            end as '성별',
 	   m_no as '후보번호',
        concat(substr(v_time,1,2), ':', substr(v_time,3))
        as '투표시간',
@@ -1337,11 +1335,9 @@ select concat(
 from tbl_vote_202005;
 
 -- 성별
-select concat(	          
-              case when substr(v_jumin,7,1) in (1,3) then '남'
-                   when substr(v_jumin,7,1) in (2,4) then '여'
-                   end             
-	   ) as '성별'
+select case when substr(v_jumin,7,1) in (1,3) then '남'
+            when substr(v_jumin,7,1) in (2,4) then '여'
+            end as '성별'
 from tbl_vote_202005;
 
 -- 투표시간
@@ -1352,7 +1348,7 @@ from tbl_vote_202005;
 select concat(	          
               case when v_confirm = 'Y' then '확인'
                    when v_confirm = 'N' then '미확인'
-                   end             
+                   end
 	   ) as '유권자확인'
 from tbl_vote_202005;
 
