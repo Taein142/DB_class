@@ -1277,8 +1277,7 @@ select v_name as '성명',
 				   when substr(v_jumin,7,1) in(3,4) then '20'
 				   end,
 			  substr(v_jumin,1,2),'년', substr(v_jumin,3,2),'월', substr(v_jumin,5,2),'일생'
-	   )
-       as '생년월일',
+	   ) as '생년월일',
 	   concat(
 			 '만',
              cast(date_format(now(), '%Y') as unsigned) -
@@ -1309,8 +1308,7 @@ select concat(
 			  when substr(v_jumin,7,1) in(3,4) then '20'
 			  end,
 			  substr(v_jumin,1,2),'년', substr(v_jumin,3,2),'월', substr(v_jumin,5,2),'일생'
-	   )
-       as '생년월일'
+	   ) as '생년월일'
        from tbl_vote_202005;
        
 -- 만나이 => 현재년도 - 태어난년도
@@ -1352,7 +1350,12 @@ select concat(
 	   ) as '유권자확인'
 from tbl_vote_202005;
 
-
+-- 후보자등수
+select m.m_no as '후보번호', m.m_name as '성명' , count(v_confirm) as '총투표건수'
+from tbl_vote_202005 v, tbl_member_202005 m
+where v.m_no = m.m_no
+group by v.m_no
+order by count(v_confirm) desc;
 
 
 
