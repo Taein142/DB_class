@@ -1170,6 +1170,7 @@ select me.custno as '회원번호', me.custname as '회원성명',
     group by me.custno
     order by '매출' desc;
 
+-- 20240109
 -- 투표 프로그램
 -- 유권자
 drop table if exists tbl_vote_202005;
