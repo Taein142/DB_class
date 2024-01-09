@@ -1297,8 +1297,8 @@ select v_name as '성명',
        concat(substr(v_time,1,2), ':', substr(v_time,3))
        as '투표시간',
        case when v_confirm = 'Y' then '확인'
-                   when v_confirm = 'N' then '미확인'
-                   end
+            when v_confirm = 'N' then '미확인'
+            end
 	   as '유권자확인'
 from tbl_vote_202005
 order by substring(v_jumin, -2);
