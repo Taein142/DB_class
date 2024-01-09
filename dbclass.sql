@@ -1099,7 +1099,7 @@ select * from comment_table c, good_table g where c.id=g.comment_id and c.id = 2
 select count(*) from good_table where comment_id=1;
 select count(*) from good_table where comment_id=2;
 
--- 실전연제문제
+-- 실전예제문제1
 drop table if exists member_tbl_02;
 create table member_tbl_02(
 	custno int primary key,
@@ -1171,6 +1171,7 @@ select me.custno as '회원번호', me.custname as '회원성명',
     order by '매출' desc;
 
 -- 투표 프로그램
+-- 유권자
 drop table if exists tbl_vote_202005;
 create table tbl_vote_202005(
 	v_jumin char(13) primary key,
@@ -1180,17 +1181,17 @@ create table tbl_vote_202005(
     v_area char(20),
     v_confirm char(1)
 );
-
+-- 후보
 drop table if exists tbl_member_202005;
 create table tbl_member_202005(
 	m_no char(1) primary key,
     m_name varchar(20),
     p_code char(2),
-    p_shccol char(13),
+    p_school char(13),
     m_jumin char(13),
     m_city varchar(20)
 );
-
+-- 정당
 drop table if exists tbl_party_202005;
 create table tbl_party_202005(
 	p_code char(2) primary key,
@@ -1244,4 +1245,31 @@ insert into tbl_party_202005 values ('P2', 'B정당', '2010-02-01', '명대표',
 insert into tbl_party_202005 values ('P3', 'C정당', '2010-03-01', '기대표', '02', '1111', '0003');
 insert into tbl_party_202005 values ('P4', 'D정당', '2010-04-01', '옥대표', '02', '1111', '0004');
 insert into tbl_party_202005 values ('P5', 'E정당', '2010-05-01', '임대표', '02', '1111', '0005');
+
+-- 투표이력테이블 셈플 데이터
+select * from tbl_vote_202005 order by substring(v_jumin, -2) asc;
+
+-- 후보 조회 화면
+select m.m_no as '후보번호',
+	   m.m_name as '성명',
+       p.p_name as '소속정당',
+       case when m.p_school = '1' then '고졸'
+			when m.p_school = '2' then '석사'
+            when m.p_school = '3' then '학사'
+                 else '없음'
+       end as '학력', 
+       concat(substr(m_jumin, 1, 6), '-', substr(m_jumin, 7)) as '주민번호',
+       m_city as '지역구',
+       concat(p.p_tel1, '-', p.p_tel2, '-', p.p_tel3) as '대표전화'
+from tbl_member_202005 m , tbl_party_202005 p 
+where m.p_code = p.p_code;
+
+-- concat: 문자열을 이어 붙일 때 (concatenate:줄줄이 잇다) 
+-- substr(): 문자열의 특정 범위를 잘라낼 때 -> substr(컬럼이름, 몇번째자리부터, 몇개를)
+-- 하이픈 넣기
+select concat(substr(m_jumin, 1, 6), '-', substr(m_jumin, 7)) as '주민번호' from tbl_member_202005;
+select concat(p_tel1, '-', p_tel2, '-', p_tel3) as 대표전화 from tbl_party_202005;
+
+
+
 
