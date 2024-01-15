@@ -13,3 +13,7 @@ grant all privileges on db_ex2.* to user_user2@localhost;
 create database db_dbclass;
 create user user_dbclass@localhost identified by '1234';
 grant all privileges on db_dbclass.* to user_dbclass@localhost;
+
+create database db_springboot;
+create user user_springboot@localhost identified by '1234';
+grant all privileges on db_springboot.* to user_springboot@localhost;
